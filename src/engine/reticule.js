@@ -1,4 +1,4 @@
-import intervalSecond from './interval';
+import { intervalSecond } from './interval';
 
 let r,g,b;
 

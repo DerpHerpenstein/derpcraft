@@ -1,4 +1,4 @@
-import intervalSecond from './interval';
+import { intervalSecond } from './interval';
 import hotbar from '../hotbar';
 import drawReticule from './reticule';
 // import utils from '../utils';
@@ -16,16 +16,16 @@ function tick() {
   movement.applyGravity();
   movement.calculateMovement();
   render();
-  
+
   /* ============================== Draw Phase ============================== */
 
   // --- predraw --- ///
   hotbar.drawIcons(); // predraw
   // utils.drawAllTextures(); // debug - display all blocks on screen
-  
+
   // --- draw --- ///
   ctx.putImageData(pixels, 0, 0); // place buffer into canvas
-  
+
   // --- postdraw --- ///
   hotbar.drawHotbarBorder(); // postdraw
   hotbar.drawIconNumers();

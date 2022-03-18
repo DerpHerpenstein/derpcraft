@@ -18,7 +18,7 @@ export const stringify = /*@__PURE__*/ map => {
         z => LOOKUP_TABLE[z] || LOOKUP_TABLE[0]
       ).join('')
     ).join('')
-  ).join('');  
+  ).join('');
 };
 
 const getOriginalMap = /*@__PURE__*/() => {
@@ -63,19 +63,24 @@ function minifyRepeats(str) {
 
 function main() {
   const { game } = window;
-  localStorageWrapper.safeSet('_mct', getTime());
+  document.getElementById("_mct").textContent = getTime();
+  //localStorageWrapper.safeSet('_mct', getTime());
   // save inventory. will probably move to a better file location
-  localStorageWrapper.safeSet('_mci', JSON.stringify(game.hotbar.items));
+  document.getElementById("_mci").textContent = JSON.stringify(game.hotbar.items);
+  //localStorageWrapper.safeSet('_mci', JSON.stringify(game.hotbar.items));
 
   const mapStr = /*@__PURE__*/ mapArrToString();
   console.log('saving mapStr length', mapStr.length)
   const mapStrMinified = /*@__PURE__*/ minifyRepeats(mapStr);
   const compressed = LZString.compress(mapStrMinified);
-  
+
   console.log('minified', mapStrMinified.length, mapStrMinified);
   console.log('compressed', compressed.length, compressed);
 
-  localStorageWrapper.safeSet('_mcm', compressed);
+  // For now just use the minified string, will come back and bzip this or something
+  // issues with UTF-16 in div, need to use byte array and compress byte array
+  document.getElementById("_mcm").textContent = mapStrMinified;
+  //localStorageWrapper.safeSet('_mcm', compressed);
 
   // verify save
   const uncompressed = LZString.decompress(compressed);

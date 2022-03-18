@@ -1,11 +1,14 @@
 
 const secondIntervalList = [];
-function second(fn) {
+export function intervalSecond(fn) {
   secondIntervalList.push(fn);
 }
 
-setInterval(() => {
-  secondIntervalList.forEach(fn => fn());
-}, 1000);
+export function initIntervalSecond(){
+  console.log("Init interval");
+  setInterval(() => {
+    secondIntervalList.forEach(fn => fn());
+  }, 1000);
+}
 
-export default second;
+//export default second;

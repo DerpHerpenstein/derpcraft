@@ -15,7 +15,7 @@ function mapStringToCurrentMap(str) {
     const z = i % 256;
     const y = i / 256 % 64 | 0;
     const x = i / 256 / 64 | 0;
-    
+
     if (str[i] !== '-') {
       const idx = LOOKUP_TABLE.indexOf(str[i]);
       if (idx !== -1) window.game.map[x][y][z] = idx; // if invalid, then refer to seed (by doing nothing). else use.
@@ -48,16 +48,21 @@ function unMinify(str) {
 function main() {
   const { game } = window;
   // load items from save
-  const time = localStorageWrapper.safeGet('_mct');
-  const itemsFromSave = tryCatch(() => JSON.parse(localStorageWrapper.safeGet('_mci')));
+  const time = document.getElementById("_mct").textContent || '';//localStorageWrapper.safeGet('_mct');
+  const itemsFromSave = tryCatch(() => JSON.parse(document.getElementById("_mci").textContent || ''/*localStorageWrapper.safeGet('_mci')*/));
   if (itemsFromSave) game.hotbar.items = itemsFromSave.map(item => item === null ? Infinity : item);
   if (time) setTime(time);
 
   // const seed = window.localStorage.get
-  const compressed = localStorageWrapper.safeGet('_mcm');
+  const compressed = document.getElementById("_mcm").textContent;//localStorageWrapper.safeGet('_mcm');
   if (!compressed) return;
+  console.log(compressed);
 
-  const uncompressed = LZString.decompress(compressed);
+  // For now just use the minified string, will come back and bzip this or something
+  // issues with UTF-16 in div, need to use byte array and compress byte array
+  const uncompressed = compressed;
+  //const uncompressed = LZString.decompress(compressed);
+  console.log(uncompressed);
   const mapStr = unMinify(uncompressed);
   mapStringToCurrentMap(mapStr);
 }

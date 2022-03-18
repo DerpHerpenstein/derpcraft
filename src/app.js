@@ -1,7 +1,7 @@
 import compress from './utils/compress';
 import uncompress from './utils/uncompress';
 import { getTime, setTime } from './engine/time';
-import intervalSecond from './engine/interval';
+import { intervalSecond, initIntervalSecond} from './engine/interval';
 import { getCanvas } from './utils';
 import localStorageWrapper from './engine/localStorage';
 const movement = require("./movement");
@@ -13,40 +13,40 @@ const { WIDTH, HEIGHT } = CONST.RES;
 const start = CONST.MAP_SIZE / 2 | 0;
 document.title = 'LibreCraft';
 
-// Setup the game object. This will be the 'source of thruth' throughout the game
-window.game = { CONST };
-window.game = {
-  CONST: CONST,
-  width: WIDTH,
-  height: HEIGHT,
-  getTime,
-  setTime,
-  player: {
-    x: start,
-    y: 0,
-    z: start,
-    velocity: 0,
-    pitch: -0.1, // Math.cos(4.6)
-    yaw: 0,
-  },
-  hotbar: {
-    selected: 0,
-    side: 0,
-    items: Array(21).fill(0), // the indices coorelates to the block id. eg: 2 is dirt. the number in the array is the quanitity
-  },
-  map: generators.map(),
-  texmap: generators.textures(),
-  ctx: document.getElementById("game").getContext("2d"),
-  fps: 0,
-  scanlinesEnabled: true,
-  renderDistance: 32,
-};
+function initGame(){
+  // Setup the game object. This will be the 'source of thruth' throughout the game
+  window.game = { CONST };
+  window.game = {
+    CONST: CONST,
+    width: WIDTH,
+    height: HEIGHT,
+    getTime,
+    setTime,
+    player: {
+      x: start,
+      y: 0,
+      z: start,
+      velocity: 0,
+      pitch: -0.1, // Math.cos(4.6)
+      yaw: 0,
+    },
+    hotbar: {
+      selected: 0,
+      side: 0,
+      items: Array(21).fill(0), // the indices coorelates to the block id. eg: 2 is dirt. the number in the array is the quanitity
+    },
+    map: generators.map(),
+    texmap: generators.textures(),
+    ctx: document.getElementById("game").getContext("2d"),
+    fps: 0,
+    scanlinesEnabled: true,
+    renderDistance: 32,
+  };
 
-document.addEventListener('DOMContentLoaded', () => {
   const { game } = window;
   const { width, height, ctx } = game;
   const $toolbar = document.getElementById('toolbar');
-  
+
   // Resolution setup
   const canvas = getCanvas();
   canvas.width = width;
@@ -54,11 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const onResize = () => {
     let windowWidth = window.innerHeight * 1.3334; // assume widescreen as default
     let windowHeight = window.innerHeight;
-    
+
     if (window.innerWidth * 0.75 < window.innerHeight) { // is tallscreen
       windowWidth = window.innerWidth;
       windowHeight = window.innerWidth * 0.75;
-    } 
+    }
 
     canvas.setAttribute(
       'style',
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   movement.init();
   engine.clock.init();
   setTimeout(uncompress.main, 500);
-
+  initIntervalSecond();
   // auto adjust speed
   intervalSecond(() => {
     const { game } = window;
@@ -120,7 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
         generateNewSeed = confirm("Generate a new seed? This will erase your current save.");
         if (generateNewSeed) {
           CONST.LOCAL_STORAGE.forEach(i => localStorage.removeItem(i));
-          localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
+          document.getElementById("_mcs").textContent = Math.random() * Number.MAX_SAFE_INTEGER | 0;
+          //localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
           window.location.reload();
         }
     }
@@ -128,4 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (game.renderDistance < 5) game.renderDistance = 5;
     else if (game.renderDistance > 255) game.renderDistance = 255;
   });
+}
+
+document.addEventListener('click', () => {
+  if(!event.target.matches('#startGame')) return;
+  var startDom = document.getElementById('startGame');
+  startDom.style.display = "none";
+
+  var gameDom = document.getElementById('gameContainer');
+  gameDom.style.display = null;
+
+    setTimeout(initGame,100);
 });

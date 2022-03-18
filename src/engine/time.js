@@ -1,4 +1,4 @@
-import intervalSecond from './interval';
+import { intervalSecond } from './interval';
 
 export let time = 0;
 const NOON = [

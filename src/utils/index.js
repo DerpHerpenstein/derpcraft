@@ -1,5 +1,5 @@
 
-import intervalSecond from '../engine/interval';
+import { intervalSecond } from '../engine/interval';
 
 let isInside = false;
 let isInsideDebounce = false;
@@ -27,7 +27,7 @@ function tryCatch(fn) {
   } catch(e) {
     out = null;
   }
-  
+
   return out;
 }
 
@@ -38,14 +38,14 @@ function drawAllTextures() {
     for (let y = 0; y < 16 * 3; y++) {
       for (let x = 0; x < 16; x++) {
         const texturePixel = texmap[x + y * 16 + i * 256 * 3];
-  
+
         const CONTRAST = 255 * 192;
         const brightness = 255; // 255, 205, 155
         const light = brightness * 255 / CONTRAST;
         let r = ((texturePixel >> 16) & 0xff) * light;
         let g = ((texturePixel >> 8) & 0xff) * light;
         let b = (texturePixel & 0xff) * light;
-        
+
 
         const blockSelect = i * 16;
         let xLocation = blockSelect + x;

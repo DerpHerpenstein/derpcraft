@@ -1,5 +1,5 @@
 import time from './time';
-import intervalSecond from './interval';
+import { intervalSecond } from './interval';
 import setPixelColor from './pixel';
 import { getBlock, calcArcFromLength } from '../utils';
 
@@ -12,7 +12,7 @@ intervalSecond(() => {
 
 function render() {
   const { texmap, width, height, player, CONST, fps, scanlinesEnabled, renderDistance } = window.game;
-  
+
   // calculate camera rotation
   const yCos = Math.cos(player.pitch);
   const ySin = Math.sin(player.pitch);

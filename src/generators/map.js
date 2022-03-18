@@ -4,14 +4,15 @@ const mapDataType = require('./mapDataType');
 const Perlin = require("../vendor/perlin.skinny");
 
 const localStorageExists = localStorageWrapper.exits();
-let seed = localStorageWrapper.safeGet('_mcs');
+let seed = document.getElementById("_mcs").textContent || '';//localStorageWrapper.safeGet('_mcs');
 
 if (!localStorageExists) {
   seed = 0;
   document.querySelector('.nosaving').classList.toggle('show');
   console.log('no localstorage. Using seed "0". No saving permitted'); // eslint-disable-line no-console
 } else if (!seed) {
-  localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
+  document.getElementById("_mcs").textContent = Math.random() * Number.MAX_SAFE_INTEGER | 0;
+  //localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
   window.location.reload();
 }
 const perlin = Perlin(seed);
@@ -41,7 +42,7 @@ module.exports = () => {
 
   const newArr = () => new Array(MAP_SIZE);
   const $loading = document.getElementById('loading');
-  
+
   // generate height-map
   const heightMap = newArr();
   const treeMap = newArr();
@@ -105,7 +106,7 @@ module.exports = () => {
         }
 
         // ore generation
-        const ore = perlin(x / MAP_SCALE * 8, y / MAP_SCALE * 8, z / MAP_SCALE * 8);  
+        const ore = perlin(x / MAP_SCALE * 8, y / MAP_SCALE * 8, z / MAP_SCALE * 8);
         if (ore > 0.2 && ore < 0.8) {
           const existingBlock = map[x][y][z];
           if (ALLOWED_CAVE_GENERATE_OVER_BLOCKS[existingBlock]) {
