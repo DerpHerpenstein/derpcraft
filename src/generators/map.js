@@ -3,26 +3,6 @@ const { setBlock } = require('../utils');
 const mapDataType = require('./mapDataType');
 const Perlin = require("../vendor/perlin.skinny");
 
-const localStorageExists = localStorageWrapper.exits();
-let seed = document.getElementById("_mcs").textContent || '';//localStorageWrapper.safeGet('_mcs');
-
-if (!localStorageExists) {
-  seed = 0;
-  document.querySelector('.nosaving').classList.toggle('show');
-  console.log('no localstorage. Using seed "0". No saving permitted'); // eslint-disable-line no-console
-} else if (!seed) {
-  document.getElementById("_mcs").textContent = Math.random() * Number.MAX_SAFE_INTEGER | 0;
-  //localStorageWrapper.safeSet('_mcs', Math.random() * Number.MAX_SAFE_INTEGER | 0);
-  window.location.reload();
-}
-const perlin = Perlin(seed);
-
-// using an object for faster lookup
-const ALLOWED_CAVE_GENERATE_OVER_BLOCKS = {
-  1: 1,
-  2: 1,
-  4: 1,
-};
 
 function growTree(map, x, y, z) {
   const height = (x * y % 6) + 6;
@@ -37,6 +17,19 @@ function growTree(map, x, y, z) {
 }
 
 module.exports = () => {
+  let seed = parseInt(document.getElementById("_mcs").textContent) || '0';//localStorageWrapper.safeGet('_mcs');
+  console.log("Seed", seed);
+
+  const perlin = Perlin(seed);
+
+  // using an object for faster lookup
+  const ALLOWED_CAVE_GENERATE_OVER_BLOCKS = {
+    1: 1,
+    2: 1,
+    4: 1,
+  };
+
+
   const { SEA_LEVEL, MAP_SCALE, MAP_SIZE } = window.game.CONST;
   const map = mapDataType();
 
