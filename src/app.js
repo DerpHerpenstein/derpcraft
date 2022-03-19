@@ -102,7 +102,12 @@ function initGame(){
         $toolbar.classList.toggle('extended');
         break;
       case 'save':
-        compress();
+        const $saving = document.getElementById('saving');
+        $saving.hidden = false;
+        setTimeout(function(){
+          compress();
+          $saving.hidden = true;
+        },100);
         break;
       case 'load':
         window.location.reload();
@@ -138,6 +143,13 @@ document.addEventListener('click', () => {
 
   var gameDom = document.getElementById('gameContainer');
   gameDom.style.display = null;
+
+  // scroll up to the game area
+  window.scroll({
+   top: 0,
+   left: 0,
+   behavior: 'smooth'
+  });
 
     setTimeout(initGame,100);
 });

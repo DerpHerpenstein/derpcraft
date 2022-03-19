@@ -8,7 +8,7 @@ button{border-radius:4px}
 .hidables,.nosaving{display:none}
 #toolbar{left:4px}
 #lock,#save{background:none;background:#ffffff4d}
-#loading{
+#loading,#saving{
   line-height: 100vh;
   font-family: sans-serif
 }
@@ -21,19 +21,54 @@ button{border-radius:4px}
 .extended #save,
 .extended #save:after{background: #ffffff;content:" Save"}
 .extended .hidables,.show{display:initial}
-.text{color:#777;text-align:left;padding-left:20px;margin-bottom:80px}.text div{display:inline-block;width:48%}
+.text{color:#777;text-align:left;padding-left:20px;margin-bottom:80px}
 .text:hover{color:#000}
 .nosaving{color:red}
 /* Reset CSS */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}main,details{display:block}h1{font-size:2em;margin:.67em 0}hr{box-sizing:content-box;height:0;overflow:visible}pre{font:1em monospace,monospace}a{background-color:transparent}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp{font:1em monospace,monospace}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}img{border-style:none}button,input,optgroup,select,textarea{margin:0;font:100%/1.15 inherit}button,input{overflow:visible}button,select{text-transform:none}button,[type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{vertical-align:baseline}textarea{overflow:auto}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px}[type="search"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:;font-style:normal;font-variant:normal;font-weight:normal;font-family:inherit}summary{display:list-item}[hidden],template{display:none}
 </style>
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.8.3/dist/paper.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.1/web3.min.js" integrity="sha512-GKw4QT/RccGJIwQxY3MhyiQ5pHrhQ8SuKFEafV+WcpOvtz7iYFQuQGFCvmGlHLctJTe8KrWU1FqvF7VOkEAJtw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  document.getElementById("_mcs").textContent = Math.random() * Number.MAX_SAFE_INTEGER | 0;
+  let ethWorlds = [];
+  ethWorlds.push({n:"1", c:"derp", d:"derp test", s:"605902759", i:"[0,0,0,2,147,2,0,0,10,63,7,5,8,5,10,13,4,1,1,0,24]", t:"65.5", m:"E1973135-E16383-E254-2E250-E4-E252-E2-E15614-E255-3E244-2E6-E-2E249-7E15869-E240-E5-2E3-E-4E236-E-E6-2E3-E-2E2-2E16109-E252-5E16123-2E2-E251-3E-2E255-E8-E6132-A9981-2E2-E254-AE5630-2A255-A253-A9982-E4604-A1028-A254-A256-A11018-2A1029-2A253-A3821-2A11273-3A16381-3A253-3A16125-3A253-2A2808-2A253-A256-A12806-A1281-A1526-2A253-3A253-2A2295-E256-E11021-3A2294-A254-2A254-2A254-A2041-E255-E13573-2A254-2A254-A2297-E13319-A253-A255-2A15872-2A16645-A32764-3A16383-A49153-2A3829-A12039-A256-A4086-A769-A11269-A-A4341-A513-A255-A11271-A4855-2A16382-A310017-A16383-A49151-A65536-A16383-2A16382-3A16381-3A253-4A253-2A15869-3A253-3A253-3A15869-3A252-4A253-3A15869-3A252-4A253-3A15869-3A252-4A252-4A15869-3A252-5A251-4A15869-4A251-4A252-4A15869-3A253-3A252-4A15869-5A251-3A253-3A15869-5A251-3A254-A15871-6A249-3A16126-4A253-A16126-A1082996-"});
+  ethWorlds.push({n:"2", c:"derp", d:"derp test", s:"605902759", i:"[0,0,0,2,147,2,0,0,10,63,7,5,8,5,10,13,4,1,1,0,24]", t:"65.5", m:"E1973135-E16383-E254-2E250-E4-E252-E2-E15614-E255-3E244-2E6-E-2E249-7E15869-E240-E5-2E3-E-4E236-E-E6-2E3-E-2E2-2E16109-E252-5E16123-2E2-E251-3E-2E255-E8-E6132-A9981-2E2-E254-AE5630-2A255-A253-A9982-E4604-A1028-A254-A256-A11018-2A1029-2A253-A3821-2A11273-3A16381-3A253-3A16125-3A253-2A2808-2A253-A256-A12806-A1281-A1526-2A253-3A253-2A2295-E256-E11021-3A2294-A254-2A254-2A254-A2041-E255-E13573-2A254-2A254-A2297-E13319-A253-A255-2A15872-2A16645-A32764-3A16383-A49153-2A3829-A12039-A256-A4086-A769-A11269-A-A4341-A513-A255-A11271-A4855-2A16382-A310017-A16383-A49151-A65536-A16383-2A16382-3A16381-3A253-4A253-2A15869-3A253-3A253-3A15869-3A252-4A253-3A15869-3A252-4A253-3A15869-3A252-4A252-4A15869-3A252-5A251-4A15869-4A251-4A252-4A15869-3A253-3A252-4A15869-5A251-3A253-3A15869-5A251-3A254-A15871-6A249-3A16126-4A253-A16126-A1082996-"});
+
+  document.getElementById("ethWorlds").innerHTML = "";
+  for(let i=0; i<ethWorlds.length; i++){
+    let newHtml = "<tr><td>" + ethWorlds[i].n + "</td><td>" + ethWorlds[i].c + "</td><td>" + ethWorlds[i].d +
+        '</td><td><button class="loadWorld" mcs="' + ethWorlds[i].s + '" mci="' + ethWorlds[i].i + '" mct="' + ethWorlds[i].t +
+        '" mcm="' + ethWorlds[i].m + '">Load World</button></td></tr>';
+    document.getElementById("ethWorlds").innerHTML += newHtml;
+  }
+});
+
+document.addEventListener("click", function(event) {
+  if(event.target.classList.contains('loadWorld')){
+    console.log(event.target);
+    document.getElementById("_mci").innerHTML = event.target.getAttribute('mci');
+    document.getElementById("_mcs").innerHTML = event.target.getAttribute('mcs');
+    document.getElementById("_mct").innerHTML = event.target.getAttribute('mct');
+    document.getElementById("_mcm").innerHTML = event.target.getAttribute('mcm');
+    setTimeout(function(){
+      document.getElementById('startGame').click();
+    },100);
+  }
+});
+</script>
+
 </head><body>
   <div id="gameContainer" style="display:none;">
     <div id=toolbar class=fixed>
       <button id=lock>🔒</button>
       <button id=save>💾</button>
       <span class=hidables>
+        <!--
         <button id=load>📂 Load</button>
         <button id=newseeed>🌱 New Map</button>
+      -->
         <span> | </span>
         <button id=minus>➖ Distance</button>
         <button id=plus>➕ Distance</button>
@@ -41,40 +76,102 @@ button{border-radius:4px}
       </span>
     </div>
     <div class="fixed fps">0</div>
-    <h1 id=loading>Loading... Please Wait...</h1>
+    <h1 id=loading>Loading...</h1>
+    <h1 id=saving hidden>Saving...</h1>
     <canvas id=game></canvas>
     <div class=nosaving style="display:none;">Saving Disabled! Error with window.localStorage</div>
   </div>
 
-  <div class=text>
-    <h1>LibreCraft</h1>
-    <p>Bringing back voxels for all</p>
-    <button id="startGame">Start Game</button>
-    <div class=col-left>
-      <h2>Features:</h2>
-      <p>- Random Terrain Generation</p>
-      <p>- Procedural Caves, Trees, Water, Ore Veins, Textures</p>
-      <p>- Render Distance Adjustable under options</p>
-      <p>- Screen Interlacing to reduce CPU</p>
-      <p>- Save/Loading in localstorage! Saves only the diff + seed</p>
-      <p>- day/night cycle</p>
-      <p>- crafting with block requirements</p>
-      <p>- plays on any computer! No GPU required</p>
+  <div>
+    <div class="paper container">
+      <div class="row flex-center">
+        <div class="sm-12 col">
+          <h3 style="margin:0px;">LibreCraft</h3>
+          <p style="font-size:0.88rem">The first 3d game entirely on the Ethereum blockchain</p>
+        </div>
+        <div class="sm-12 col" style="margin:0px;padding:0px;">
+          <h5 style="margin:0px;">Original Game By <a href="https://twitter.com/renomck" target="_blank">Reno McKenzie</a> - <a href="https://github.com/darkenvy/13k-voxelcraft" target="_blank">Github</a></h5>
+        </div>
+        <div class="sm-12 col" style="margin:0px;padding:0px;">
+          <h5 style="margin:0px;">Web3 Integration By <a href="https://twitter.com/0xDerpNation" target="_blank">Derp Herpenstein</a> - <a href="https://github.com/darkenvy/13k-voxelcraft" target="_blank">Github</a></h5>
+        </div>
+        <br><br>
+        <button id="startGame">Create new world</button>
+      </div>
+
+      <div class="row flex-spaces tabs">
+        <input id="tab1" type="radio" name="tabs" checked>
+        <label for="tab1">Latest Worlds</label>
+
+        <input id="tab2" type="radio" name="tabs">
+        <label for="tab2">World Search</label>
+
+
+        <input id="tab3" type="radio" name="tabs">
+        <label for="tab3">Features/Controls</label>
+
+        <div class="content" id="content1">
+          <div class="row flex-center">
+            <div class="sm-12 col">
+              <h5 style="margin:0px">Note: All of these worlds are loaded directly from the Ethereum blockchain</h5>
+            </div>
+            <div class="sm-12 col">
+              <table style="text-align:left;">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Creator</th>
+                    <th>Description</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="ethWorlds">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="content" id="content2">
+          <p>
+            Bacon ipsum dolor sit amet landjaeger sausage brisket...
+          </p>
+        </div>
+        <div class="content" id="content3">
+          <div class="row flex-top" style="text-align:left;">
+            <div class="sm-6 col">
+              <h3>Features:</h3>
+              <p>- <b>Entire game stored on the Ethereum blockchain</b></p>
+              <p>- <b>Save/Load from Ethereum blockchain</b></p>
+              <!--<p>- <b>Chat on the Ethereum blockchain</b></p>-->
+              <p>- Random Terrain Generation</p>
+              <p>- Procedural Caves, Trees, Water, Ore Veins, Textures</p>
+              <p>- Render Distance Adjustable under options</p>
+              <p>- Screen Interlacing to reduce CPU</p>
+              <p>- day/night cycle</p>
+              <p>- crafting with block requirements</p>
+              <p>- plays on any computer! No GPU required</p>
+            </div>
+
+            <div class="sm-6 col">
+              <h3>Controls:</h3>
+              <p>- <b>[wasd]</b> to move</p>
+              <p>- <b>[e]</b> to toggle craftable items</p>
+              <p>- <b>[spacebar]</b> to jump</p>
+              <p>- hold <b>[shift]</b> to take/build on liquids</p>
+              <p>- <b>[left click]</b> to break a block</p>
+              <p>- <b>[right click]</b> to build a block</p>
+              <p>- <b>[number keys]</b> to change selected items</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class=col-right>
-      <h2>Controls:</h2>
-      <p>- <b>[wasd]</b> to move</p>
-      <p>- <b>[e]</b> to toggle craftable items</p>
-      <p>- <b>[spacebar]</b> to jump</p>
-      <p>- hold <b>[shift]</b> to take/build on liquids</p>
-      <p>- <b>[left click]</b> to break a block</p>
-      <p>- <b>[right click]</b> to build a block</p>
-      <p>- <b>[number keys]</b> to change selected items</p>
+    <div style="display:none;">
+      <div id="_mcs" data=""></div>
+      <div id="_mci" data=""></div>
+      <div id="_mct" data=""></div>
+      <div id="_mcm" data=""></div>
     </div>
-    <div id="_mcs" data=""></div>
-    <div id="_mci" data=""></div>
-    <div id="_mct" data=""></div>
-    <div id="_mcm" data=""></div>
   </div>
 </body></html>
