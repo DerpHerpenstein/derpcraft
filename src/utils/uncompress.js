@@ -1,7 +1,7 @@
 import { tryCatch } from './index';
 import { setTime } from '../engine/time';
 import localStorageWrapper from '../engine/localStorage';
-const LZString = require('../vendor/lz-string.orig');
+const LZString = require('../vendor/lz-string-new');//.orig');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
 "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\", "]", "^", "_",
@@ -54,13 +54,16 @@ function main() {
   if (time) setTime(time);
 
   // const seed = window.localStorage.get
-  const compressed = document.getElementById("_mcm").textContent;//localStorageWrapper.safeGet('_mcm');
+  //const compressed = document.getElementById("_mcm").textContent;//localStorageWrapper.safeGet('_mcm');
+  const compressedStrArray = document.getElementById("_mcm").textContent.split(',');
+  const compressed = Uint8Array.from(compressedStrArray);
   if (!compressed) return;
   console.log(compressed);
 
   // For now just use the minified string, will come back and bzip this or something
   // issues with UTF-16 in div, need to use byte array and compress byte array
-  const uncompressed = compressed;
+  //const uncompressed = compressed;
+  const uncompressed = LZString.decompressFromUint8Array(compressed);
   //const uncompressed = LZString.decompress(compressed);
   console.log(uncompressed);
   const mapStr = unMinify(uncompressed);

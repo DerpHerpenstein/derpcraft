@@ -2,7 +2,7 @@ import { unMinify } from './uncompress';
 import { getTime } from '../engine/time';
 import generators from '../generators';
 import localStorageWrapper from '../engine/localStorage';
-const LZString = require('../vendor/lz-string.orig');
+const LZString = require('../vendor/lz-string-new');//.orig');
 
 /*  ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
 "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\", "]", "^", "_",
@@ -72,18 +72,19 @@ function main() {
   const mapStr = /*@__PURE__*/ mapArrToString();
   console.log('saving mapStr length', mapStr.length)
   const mapStrMinified = /*@__PURE__*/ minifyRepeats(mapStr);
-  const compressed = LZString.compress(mapStrMinified);
+  const compressed = LZString.compressToUint8Array(mapStrMinified);
 
   console.log('minified', mapStrMinified.length, mapStrMinified);
   console.log('compressed', compressed.length, compressed);
 
   // For now just use the minified string, will come back and bzip this or something
   // issues with UTF-16 in div, need to use byte array and compress byte array
-  document.getElementById("_mcm").textContent = mapStrMinified;
+  document.getElementById("_mcm").textContent = compressed;
+  //document.getElementById("_mcm").textContent = mapStrMinified;
   //localStorageWrapper.safeSet('_mcm', compressed);
 
   // verify save
-  const uncompressed = LZString.decompress(compressed);
+  const uncompressed = LZString.decompressFromUint8Array(compressed);
   const unMinified = unMinify(uncompressed);
   if (unMinified !== mapStr) console.log('Could not save map internally');
   else console.log('success');
