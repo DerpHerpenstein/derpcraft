@@ -1,5 +1,7 @@
 
 # Created by https://www.gitignore.io/api/node,osx
+public/
+public/*
 dist/
 dist/*
 ### Node ###
