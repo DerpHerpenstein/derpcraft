@@ -56,18 +56,21 @@ function main() {
   // const seed = window.localStorage.get
   //const compressed = document.getElementById("_mcm").textContent;//localStorageWrapper.safeGet('_mcm');
   const compressedStrArray = document.getElementById("_mcm").textContent.split(',');
-  const compressed = Uint8Array.from(compressedStrArray);
+  let compressed = undefined;
+  if(compressedStrArray.length > 1)
+    compressed = Uint8Array.from(compressedStrArray);
   if (!compressed) return;
-  console.log(compressed);
+  //console.log(compressed);
 
   // For now just use the minified string, will come back and bzip this or something
   // issues with UTF-16 in div, need to use byte array and compress byte array
   //const uncompressed = compressed;
   const uncompressed = LZString.decompressFromUint8Array(compressed);
   //const uncompressed = LZString.decompress(compressed);
-  console.log(uncompressed);
+  //console.log(uncompressed);
   const mapStr = unMinify(uncompressed);
   mapStringToCurrentMap(mapStr);
+  console.log("Map Loaded");
 }
 
 module.exports = {
