@@ -28,22 +28,180 @@ button{border-radius:4px}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/papercss@1.8.3/dist/paper.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.1/web3.min.js" integrity="sha512-GKw4QT/RccGJIwQxY3MhyiQ5pHrhQ8SuKFEafV+WcpOvtz7iYFQuQGFCvmGlHLctJTe8KrWU1FqvF7VOkEAJtw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
+//*
+const web3Instance = new Web3(ethereum);
 
-document.addEventListener("DOMContentLoaded", function(event) {
-  document.getElementById("_mcs").textContent = Math.random() * Number.MAX_SAFE_INTEGER | 0;
-  let ethWorlds = [];
-  ethWorlds.push({n:"1", c:"derp", d:"derp test", s:"605902759", i:"[0,0,0,2,147,2,0,0,10,63,7,5,8,5,10,13,4,1,1,0,24]", t:"65.5", m:"E1973135-E16383-E254-2E250-E4-E252-E2-E15614-E255-3E244-2E6-E-2E249-7E15869-E240-E5-2E3-E-4E236-E-E6-2E3-E-2E2-2E16109-E252-5E16123-2E2-E251-3E-2E255-E8-E6132-A9981-2E2-E254-AE5630-2A255-A253-A9982-E4604-A1028-A254-A256-A11018-2A1029-2A253-A3821-2A11273-3A16381-3A253-3A16125-3A253-2A2808-2A253-A256-A12806-A1281-A1526-2A253-3A253-2A2295-E256-E11021-3A2294-A254-2A254-2A254-A2041-E255-E13573-2A254-2A254-A2297-E13319-A253-A255-2A15872-2A16645-A32764-3A16383-A49153-2A3829-A12039-A256-A4086-A769-A11269-A-A4341-A513-A255-A11271-A4855-2A16382-A310017-A16383-A49151-A65536-A16383-2A16382-3A16381-3A253-4A253-2A15869-3A253-3A253-3A15869-3A252-4A253-3A15869-3A252-4A253-3A15869-3A252-4A252-4A15869-3A252-5A251-4A15869-4A251-4A252-4A15869-3A253-3A252-4A15869-5A251-3A253-3A15869-5A251-3A254-A15871-6A249-3A16126-4A253-A16126-A1082996-"});
-  ethWorlds.push({n:"2", c:"derp", d:"derp test", s:"605902759", i:"[0,0,0,2,147,2,0,0,10,63,7,5,8,5,10,13,4,1,1,0,24]", t:"65.5", m:"E1973135-E16383-E254-2E250-E4-E252-E2-E15614-E255-3E244-2E6-E-2E249-7E15869-E240-E5-2E3-E-4E236-E-E6-2E3-E-2E2-2E16109-E252-5E16123-2E2-E251-3E-2E255-E8-E6132-A9981-2E2-E254-AE5630-2A255-A253-A9982-E4604-A1028-A254-A256-A11018-2A1029-2A253-A3821-2A11273-3A16381-3A253-3A16125-3A253-2A2808-2A253-A256-A12806-A1281-A1526-2A253-3A253-2A2295-E256-E11021-3A2294-A254-2A254-2A254-A2041-E255-E13573-2A254-2A254-A2297-E13319-A253-A255-2A15872-2A16645-A32764-3A16383-A49153-2A3829-A12039-A256-A4086-A769-A11269-A-A4341-A513-A255-A11271-A4855-2A16382-A310017-A16383-A49151-A65536-A16383-2A16382-3A16381-3A253-4A253-2A15869-3A253-3A253-3A15869-3A252-4A253-3A15869-3A252-4A253-3A15869-3A252-4A252-4A15869-3A252-5A251-4A15869-4A251-4A252-4A15869-3A253-3A252-4A15869-5A251-3A253-3A15869-5A251-3A254-A15871-6A249-3A16126-4A253-A16126-A1082996-"});
+const dngAbi = [ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" }, { "indexed": true, "internalType": "uint256", "name": "saveId", "type": "uint256" } ], "name": "SaveGame", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "currentGameId", "type": "uint256" }, { "internalType": "string", "name": "note", "type": "string" }, { "internalType": "bytes", "name": "data1", "type": "bytes" }, { "internalType": "bytes", "name": "data2", "type": "bytes" }, { "internalType": "bytes", "name": "data3", "type": "bytes" }, { "internalType": "bytes", "name": "data4", "type": "bytes" } ], "name": "saveGame", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ];
 
-  document.getElementById("ethWorlds").innerHTML = "";
-  for(let i=0; i<ethWorlds.length; i++){
-    let newHtml = "<tr><td>" + ethWorlds[i].n + "</td><td>" + ethWorlds[i].c + "</td><td>" + ethWorlds[i].d +
-        '</td><td><button class="loadWorld" mcs="' + ethWorlds[i].s + '" mci="' + ethWorlds[i].i + '" mct="' + ethWorlds[i].t +
-        '" mcm="' + ethWorlds[i].m + '">Load World</button></td></tr>';
-    document.getElementById("ethWorlds").innerHTML += newHtml;
+let dngAddress = "0x364bA8d803c407E8766582be6e398ae8a6a9355C";
+let dngContract = new web3Instance.eth.Contract(dngAbi,dngAddress);
+let walletAddress = "";
+let gameId = 1;
+
+
+let savedGames = [];
+
+function updateGUI(){
+  $("#ethWorlds").html("");
+  for(let i=0; i<savedGames.length; i++){
+    let creator = savedGames[i].c.substring(0,6) + "..." + savedGames[i].c.slice(savedGames[i].c.length-4);
+    let newHtml = "<tr><td>" + savedGames[i].n + "</td><td>" + creator + "</td><td>" + savedGames[i].d +
+        '</td><td><button class="loadWorld" mcs="' + savedGames[i].s + '" mci="' + savedGames[i].i + '" mct="' + savedGames[i].t +
+        '" mcm="' + savedGames[i].m + '">Load World</button></td></tr>';
+    $("#ethWorlds").append(newHtml);
   }
+}
+
+async function updateSavedGames(savedGame){
+  tx = await web3Instance.eth.getTransaction(savedGame.txHash);
+  input_data = '0x' + tx.input.slice(10);  // get only data without function selector
+  //uint256 currentGameId, uint16 version, string calldata note, bytes calldata data1,bytes calldata data2,bytes calldata data3,bytes calldata data4
+  params = web3Instance.eth.abi.decodeParameters(['uint256', 'string', 'bytes', 'bytes', 'bytes', 'bytes'], input_data);
+  let game = {};
+  game.n = params[0];
+  game.c = tx.from;
+  game.d = params[1];
+  game.i = web3Instance.utils.hexToUtf8(params[2]);
+  game.s = web3Instance.utils.hexToUtf8(params[3]);
+  game.t = web3Instance.utils.hexToUtf8(params[4]);
+  game.m = new Uint8Array(params[5].slice(2).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+  savedGames.push(game);
+}
+
+function updateEvents(results, eventType){
+  for (let i = 0; i < results.length; i++){
+      updateEvent(results[i], eventType);
+    }
+}
+
+function updateEvent(result, eventType, update){
+  let newEvent = {};
+  newEvent = result['returnValues'];
+  newEvent['blockNumber'] = result['blockNumber'];
+  newEvent['txHash'] = result['transactionHash'];
+  if(eventType == "SaveGame")
+    updateSavedGames(newEvent);
+  if(update){
+    updateGUI();
+  }
+}
+
+let options = {};
+
+async function getInitialEventData(){
+
+  options.fromBlock = '0';
+  options.toBlock = await web3Instance.eth.getBlockNumber();
+  options.filter = { to: [walletAddress] };
+  await dngContract.getPastEvents("SaveGame", options).then(results => updateEvents(results, "SaveGame")).catch(err => console.log(err));
+
+  options = {};
+  dngContract.events.SaveGame(options).on('data', event => updateEvent(event, "SaveGame", 1), "SaveGame");
+
+  updateGUI();
+}
+
+
+
+
+$(document).on('click', '#saveGame', async function(){
+  $(this).addClass("disabled");
+  $(this).prop("disabled", true);
+  try{
+    let feePerGas = await web3Instance.eth.getGasPrice();
+    let note = prompt('Enter note/description to save on chain');
+    let mciSave = web3Instance.utils.utf8ToHex(document.getElementById("_mci").innerHTML);
+    let mcsSave = web3Instance.utils.utf8ToHex(document.getElementById("_mcs").innerHTML);
+    let mctSave = web3Instance.utils.utf8ToHex(document.getElementById("_mct").innerHTML);
+    let mcmSave = Uint8Array.from(document.getElementById("_mcm").textContent.split(','));
+    let saveGame = await dngContract.methods.saveGame(gameId, note, mciSave, mcsSave, mctSave, mcmSave).send({
+          from: walletAddress,
+          gasPrice: undefined,
+          maxFeePerGas: Math.max(feePerGas, 2000000000),
+          maxPriorityFeePerGas: 2000000000,
+          type: '0x2',
+        });
+    $("#modal_title").html("Save successfull");
+    $("#modal_subtitle").html("ooh YEAH!");
+    $("#modal_text").html("You have saved your game on the blockchain!<br>Save ID: X");
+    $("#modal_button").click();
+  }
+  catch(e){
+    $("#modal_title").html("Transaction Error");
+    $("#modal_subtitle").html("uh-oh!");
+    $("#modal_text").html(e.message);
+    $("#modal_button").click();
+  }
+  $(this).removeClass("disabled");
+  $(this).prop("disabled", false);
 });
+
+
+async function checkWeb3(){
+
+  if(window.ethereum) {
+    $("#eth_login_button").addClass("is-disabled");
+    $("#eth_login_button").html("Please check web3 wallet");
+
+    //const enabledWeb3 = await ethereum.enable();
+    const currentAccounts = await web3Instance.eth.getAccounts();
+    const account = currentAccounts[0];
+    walletAddress = account;
+
+    if(account){
+      $("#eth_login_button").removeClass("is-disabled");
+      $("#eth_login_button").html("Wallet:" + account.substring(0,6) + "..." + account.slice(account.length-4));
+      $("#eth_login_button").addClass("is-success");
+      $("#startGame").css("display","");
+
+    }
+    else{
+      $("#eth_login_button").removeClass("is-disabled");
+      $("#eth_login_button").html("Connect to web3 wallet");
+      $("#startGame").css("display","none");
+    }
+
+  }
+  else{
+    $("#eth_login_button").html("Error loading Web3");
+    $("#eth_login_button").addClass("is-disabled");
+    $("#startGame").css("display","none");
+  }
+}
+
+$(document).on('click', '#eth_login_button', function(){
+  try{
+    ethereum.request({ method: 'eth_requestAccounts' });
+  }
+  catch(err){
+    $("#eth_login_button").html("Web3 wallet not available");
+  }
+  checkWeb3();
+});
+
+
+async function checkWebAccount(){
+  try{
+    const currentAccounts = await web3Instance.eth.getAccounts();
+    const account = currentAccounts[0];
+    if(account != walletAddress){
+      walletAddress = account;
+      getInitialEventData()
+      checkWeb3();
+    }
+    setTimeout(checkWebAccount, 500);
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+
+setTimeout(checkWebAccount, 500);
+//*/
+
 
 document.addEventListener("click", function(event) {
   if(event.target.classList.contains('loadWorld')){
@@ -64,6 +222,7 @@ document.addEventListener("click", function(event) {
     <div id=toolbar class=fixed>
       <button id=lock>🔒</button>
       <button id=save>💾</button>
+      <button style="display:none;" id=saveGame></button>
       <span class=hidables>
         <!--
         <button id=load>📂 Load</button>
@@ -86,17 +245,25 @@ document.addEventListener("click", function(event) {
     <div class="paper container">
       <div class="row flex-center">
         <div class="sm-12 col">
-          <h3 style="margin:0px;">LibreCraft</h3>
+          <h3 style="margin:0px;">Derp Craft </h3>
           <p style="font-size:0.88rem">The first 3d game entirely on the Ethereum blockchain</p>
-        </div>
-        <div class="sm-12 col" style="margin:0px;padding:0px;">
           <h5 style="margin:0px;">Original Game By <a href="https://twitter.com/renomck" target="_blank">Reno McKenzie</a> - <a href="https://github.com/darkenvy/13k-voxelcraft" target="_blank">Github</a></h5>
+          <h5 style="margin:0px;">Web3 Integration By <a href="https://twitter.com/0xDerpNation" target="_blank">Derp Herpenstein</a> - <a href="https://github.com/darkenvy/13k-voxelcraft" target="_blank">Github</a></h5>
+
+
+        </div>
+        <div class="sm-12 col">
+          <img style="height:6rem;margin-left:auto;margin-right:auto;" src="/images/cards/voxelCard.png"></img>
+          <a target="_blank" class="paper-btn" href="/">Home</img></a>
+          <button id="eth_login_button">Login</button>
+          <button id="startGame" style="display:none;">Create new world</button>
         </div>
         <div class="sm-12 col" style="margin:0px;padding:0px;">
-          <h5 style="margin:0px;">Web3 Integration By <a href="https://twitter.com/0xDerpNation" target="_blank">Derp Herpenstein</a> - <a href="https://github.com/darkenvy/13k-voxelcraft" target="_blank">Github</a></h5>
+        </div>
+        <div class="sm-12 col" style="margin:0px;padding:0px;">
         </div>
         <br><br>
-        <button id="startGame">Create new world</button>
+
       </div>
 
       <div class="row flex-spaces tabs">
@@ -104,7 +271,7 @@ document.addEventListener("click", function(event) {
         <label for="tab1">Latest Worlds</label>
 
         <input id="tab2" type="radio" name="tabs">
-        <label for="tab2">World Search</label>
+        <label for="tab2">Specific World</label>
 
 
         <input id="tab3" type="radio" name="tabs">
@@ -132,9 +299,14 @@ document.addEventListener("click", function(event) {
           </div>
         </div>
         <div class="content" id="content2">
-          <p>
-            Bacon ipsum dolor sit amet landjaeger sausage brisket...
-          </p>
+          <div class="row flex-center">
+            <div class="col sm-12">
+              <div class="form-group">
+                <input type="text" style="display:inline;" placeholder="Enter save id" id="loadWorldId">
+                <button id="loadWorld">Load world</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="content" id="content3">
           <div class="row flex-top" style="text-align:left;">
@@ -172,6 +344,21 @@ document.addEventListener("click", function(event) {
       <div id="_mci" data=""></div>
       <div id="_mct" data=""></div>
       <div id="_mcm" data=""></div>
+    </div>
+
+    <div class="row flex-spaces child-borders">
+      <label id ="modal_button" style="display:none;" class="paper-btn margin" for="modal-1"></label>
+    </div>
+    <input class="modal-state" id="modal-1" type="checkbox">
+    <div class="modal">
+      <label class="modal-bg" for="modal-1"></label>
+      <div class="modal-body" style="min-width:400px; max-width:900px;">
+        <label class="btn-close" for="modal-1">X</label>
+        <h4 id="modal_title" class="modal-title">Modal Title</h4>
+        <h5 id="modal_subtitle" class="modal-subtitle">Modal Subtitle</h5>
+        <p id="modal_text" class="modal-text">This is an example of modal which is implemented with pure CSS! :D</p>
+        <label for="modal-1" class="paper-btn margin">Okay</label>
+      </div>
     </div>
   </div>
 </body></html>

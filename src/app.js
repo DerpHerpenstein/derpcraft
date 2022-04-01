@@ -107,6 +107,7 @@ function initGame(){
         setTimeout(function(){
           compress();
           $saving.hidden = true;
+          document.getElementById('saveGame').click();
         },100);
         break;
       case 'load':
