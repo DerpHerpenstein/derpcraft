@@ -45,7 +45,7 @@ let savedGames = [];
 
 function updateGUI(){
   $("#ethWorlds").html("");
-  for(let i=0; i<savedGames.length; i++){
+  for(let i=savedGames.length-1; i>=0; i--){
     let creator = savedGames[i].c.substring(0,6) + "..." + savedGames[i].c.slice(savedGames[i].c.length-4);
     let newHtml = "<tr><td>" + savedGames[i].n + "</td><td>" + creator + "</td><td>" + savedGames[i].d +
         '</td><td><button class="loadWorld" mcs="' + savedGames[i].s + '" mci="' + savedGames[i].i + '" mct="' + savedGames[i].t +
@@ -60,7 +60,7 @@ async function updateSavedGames(savedGame){
   //uint256 currentGameId, uint16 version, string calldata note, bytes calldata data1,bytes calldata data2,bytes calldata data3,bytes calldata data4
   params = web3Instance.eth.abi.decodeParameters(['uint256', 'string', 'bytes', 'bytes', 'bytes', 'bytes'], input_data);
   let game = {};
-  game.n = params[0];
+  game.n = savedGame.saveId;
   game.c = tx.from;
   game.d = params[1];
   game.i = web3Instance.utils.hexToUtf8(params[2]);
@@ -74,6 +74,7 @@ function updateEvents(results, eventType){
   for (let i = 0; i < results.length; i++){
       updateEvent(results[i], eventType);
     }
+    setTimeout(updateGUI,100);
 }
 
 function updateEvent(result, eventType, update){
@@ -91,9 +92,9 @@ function updateEvent(result, eventType, update){
 let options = {};
 
 async function getInitialEventData(){
-
-  options.fromBlock = '0';
-  options.toBlock = await web3Instance.eth.getBlockNumber();
+  let currentBlock = await web3Instance.eth.getBlockNumber();
+  options.fromBlock = (currentBlock > 100000 ? currentBlock-100000: 0); // ~15 days worth of stuff
+  options.toBlock = currentBlock;
   options.filter = { to: [walletAddress] };
   await dngContract.getPastEvents("SaveGame", options).then(results => updateEvents(results, "SaveGame")).catch(err => console.log(err));
 
@@ -188,7 +189,7 @@ async function checkWebAccount(){
     const account = currentAccounts[0];
     if(account != walletAddress){
       walletAddress = account;
-      getInitialEventData()
+      getInitialEventData();
       checkWeb3();
     }
     setTimeout(checkWebAccount, 500);
@@ -202,6 +203,9 @@ async function checkWebAccount(){
 setTimeout(checkWebAccount, 500);
 //*/
 
+$(document).ready(function() {
+    $("#_mcs").html("" + Math.random() * Number.MAX_SAFE_INTEGER | 0);
+});
 
 document.addEventListener("click", function(event) {
   if(event.target.classList.contains('loadWorld')){
@@ -286,7 +290,7 @@ document.addEventListener("click", function(event) {
               <table style="text-align:left;">
                 <thead>
                   <tr>
-                    <th>#</th>
+                    <th>Save ID</th>
                     <th>Creator</th>
                     <th>Description</th>
                     <th></th>
