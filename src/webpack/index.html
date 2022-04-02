@@ -62,7 +62,7 @@ async function updateSavedGames(savedGame){
   let game = {};
   game.n = savedGame.saveId;
   game.c = tx.from;
-  game.d = params[1];
+  game.d = params[2];
   game.i = web3Instance.utils.hexToUtf8(params[3]);
   game.s = web3Instance.utils.hexToUtf8(params[4]);
   game.t = web3Instance.utils.hexToUtf8(params[5]);
