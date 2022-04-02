@@ -88,6 +88,14 @@ function main() {
   const unMinified = unMinify(uncompressed);
   if (unMinified !== mapStr) console.log('Could not save map internally');
   else console.log('success');
+  let savedJson = {
+    mci: document.getElementById("_mci").textContent,
+    mcs: document.getElementById("_mcs").textContent,
+    mct: document.getElementById("_mct").textContent,
+    mcm: document.getElementById("_mcm").textContent
+  }
+  console.log("JSON SAVED STRING");
+  console.log(JSON.stringify(savedJson));
 }
 
 export default /*@__PURE__*/ main;
