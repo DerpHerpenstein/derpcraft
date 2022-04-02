@@ -59,14 +59,14 @@ module.exports = {
   calculateMovement: () => {
     const { player } = window.game;
     const feet =  getBlock(player.x,player.y+1,player.z);
-    
+
     if (
       !keyState.forward &&
       !keyState.backward &&
       !keyState.strafeLeft &&
       !keyState.strafeRight
     ) return;
-    
+
     const speedModifier = feet == 9 ? 16 : 8;
     let x = player.x;
     let y = player.y + 1.8; // 1.8 is player height. 1.8 meters
@@ -80,7 +80,7 @@ module.exports = {
       x -= playerYawSin;
       z -= playerYawCos;
     }
-    
+
     const playerYawHalfPI = player.yaw - Math.PI / 2;
     const playerYawHalfPISin = Math.sin(playerYawHalfPI) / speedModifier;
     const playerYawHalfPICos = Math.cos(playerYawHalfPI) / speedModifier;
@@ -104,7 +104,7 @@ module.exports = {
       else if (inBlockZ == 0 || inBlockZ == 9) player.z = z;
     }
   },
-  
+
   init: () => {
     const { player, map } = window.game;
     const eL = document.addEventListener;
@@ -143,10 +143,10 @@ module.exports = {
 
       else if(k==48) game.hotbar.selected = 9; // number select, 0
       else if (k>=49 && k<=57) game.hotbar.selected = k - 49; // number select. 1-9
-      
+
       else if(k==69) game.hotbar.side = game.hotbar.side ? 0 : 1; // e key. switch toolbar sides
     });
-    
+
     eL("keyup", e => {
       const k=e.keyCode;
       if(k==16)keyState.shift=0;
@@ -156,7 +156,7 @@ module.exports = {
       else if(k==83)keyState.backward=0;
       else if(k==32)keyState.jump=0;
     });
-    
+
     eL("click", e => {
       const { player, hotbar } = window.game;
       const { items } = hotbar;
@@ -181,13 +181,13 @@ module.exports = {
           if (/* left click */ e.button === 0) {
             map[rayX | 0][rayY | 0][rayZ | 0] = 0;
             inventoryAdd(blockId);
-          } 
-          
+          }
+
           else if (/* right click */ e.button === 2) {
             const [ pRayX, pRayY, pRayZ ] = previous;
             const blockId = BLOCKS_MAP[hotbar.side][hotbar.selected];
             const count = items[blockId];
-            if (!count) return;
+            if (count < 1) return;
             map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
             inventoryRemove(blockId);
           }
@@ -199,7 +199,7 @@ module.exports = {
         previous = [ rayX, rayY, rayZ ];
       }
     });
-    
+
     ;["pointer","mozpointer","webkitpointer"] // eslint-disable-line no-extra-semi
       .forEach(i => document.addEventListener(`${i}lockchange`, e => {
         const { pointerLockElement, mozPointerLockElement, webkitPointerLockElement } = document;
