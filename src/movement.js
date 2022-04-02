@@ -157,48 +157,54 @@ module.exports = {
       else if(k==32)keyState.jump=0;
     });
 
-    eL("click", e => {
-      const { player, hotbar } = window.game;
-      const { items } = hotbar;
-      let rayX = player.x,
-          rayY = player.y,
-          rayZ = player.z;
-      let previous = [];
-      for (var i = 0; i < 6 * 1000; i++) {
-        const playerPitchCos = Math.cos(player.pitch);
-        rayX += Math.sin(player.yaw) * playerPitchCos / 1000;
-        rayY -= Math.sin(player.pitch) / 1000;
-        rayZ += Math.cos(player.yaw) * playerPitchCos / 1000;
+    function doOnClick(e) {
+      let canvas = document.querySelector('#game');
+      // only change things if we are locked into the game
+      if(document.pointerLockElement === canvas || document.mozPointerLockElement === canvas){
+        const { player, hotbar } = window.game;
+        const { items } = hotbar;
+        let rayX = player.x,
+            rayY = player.y,
+            rayZ = player.z;
+        let previous = [];
+        for (var i = 0; i < 6 * 1000; i++) {
+          const playerPitchCos = Math.cos(player.pitch);
+          rayX += Math.sin(player.yaw) * playerPitchCos / 1000;
+          rayY -= Math.sin(player.pitch) / 1000;
+          rayZ += Math.cos(player.yaw) * playerPitchCos / 1000;
 
-        // ray found a block
-        const blockId = getBlock(rayX, rayY, rayZ);
-        let foundBlock = blockId > 0;
+          // ray found a block
+          const blockId = getBlock(rayX, rayY, rayZ);
+          let foundBlock = blockId > 0;
 
-        // if not holding shift, then ignore lava and water
-        if (blockId == 9 || blockId == 10) foundBlock = keyState.shift;
+          // if not holding shift, then ignore lava and water
+          if (blockId == 9 || blockId == 10) foundBlock = keyState.shift;
 
-        if (foundBlock) {
-          if (/* left click */ e.button === 0) {
-            map[rayX | 0][rayY | 0][rayZ | 0] = 0;
-            inventoryAdd(blockId);
+          if (foundBlock) {
+            if (/* left click */ e.button === 0) {
+              map[rayX | 0][rayY | 0][rayZ | 0] = 0;
+              inventoryAdd(blockId);
+            }
+
+            else if (/* right click */ e.button === 2) {
+              const [ pRayX, pRayY, pRayZ ] = previous;
+              const blockId = BLOCKS_MAP[hotbar.side][hotbar.selected];
+              const count = items[blockId];
+              if (count < 1) return;
+              map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
+              inventoryRemove(blockId);
+            }
+            return;
           }
 
-          else if (/* right click */ e.button === 2) {
-            const [ pRayX, pRayY, pRayZ ] = previous;
-            const blockId = BLOCKS_MAP[hotbar.side][hotbar.selected];
-            const count = items[blockId];
-            if (count < 1) return;
-            map[pRayX | 0][pRayY | 0][pRayZ | 0] = blockId || 1; // setBlock(rayX, rayY, rayZ, currBlock || 1, map);
-            inventoryRemove(blockId);
-          }
-          return;
+          /* previous is used for building. It's the ray's last state before it hit a block.
+          This is the position where we will build the block at [if right clicked] */
+          previous = [ rayX, rayY, rayZ ];
         }
-
-        /* previous is used for building. It's the ray's last state before it hit a block.
-        This is the position where we will build the block at [if right clicked] */
-        previous = [ rayX, rayY, rayZ ];
-      }
-    });
+      }// end pointer lock check
+    }
+    eL("click", doOnClick);
+    eL("auxclick", doOnClick);
 
     ;["pointer","mozpointer","webkitpointer"] // eslint-disable-line no-extra-semi
       .forEach(i => document.addEventListener(`${i}lockchange`, e => {
