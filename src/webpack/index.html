@@ -33,12 +33,13 @@ button{border-radius:4px}
 //*
 const web3Instance = new Web3(ethereum);
 
-const dngAbi = [ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" }, { "indexed": true, "internalType": "uint256", "name": "saveId", "type": "uint256" } ], "name": "SaveGame", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "currentGameId", "type": "uint256" }, { "internalType": "string", "name": "note", "type": "string" }, { "internalType": "bytes", "name": "data1", "type": "bytes" }, { "internalType": "bytes", "name": "data2", "type": "bytes" }, { "internalType": "bytes", "name": "data3", "type": "bytes" }, { "internalType": "bytes", "name": "data4", "type": "bytes" } ], "name": "saveGame", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ];
+const dngAbi = [ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" }, { "indexed": false, "internalType": "uint16", "name": "version", "type": "uint16" }, { "indexed": true, "internalType": "uint256", "name": "saveId", "type": "uint256" } ], "name": "SaveGame", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "currentGameId", "type": "uint256" }, { "internalType": "uint16", "name": "version", "type": "uint16" }, { "internalType": "string", "name": "note", "type": "string" }, { "internalType": "bytes", "name": "data1", "type": "bytes" }, { "internalType": "bytes", "name": "data2", "type": "bytes" }, { "internalType": "bytes", "name": "data3", "type": "bytes" }, { "internalType": "bytes", "name": "data4", "type": "bytes" } ], "name": "saveGame", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, ];
 
 let dngAddress = "0x364bA8d803c407E8766582be6e398ae8a6a9355C";
 let dngContract = new web3Instance.eth.Contract(dngAbi,dngAddress);
 let walletAddress = "";
 let gameId = 1;
+let gameVersion = 1;
 
 
 let savedGames = [];
@@ -56,17 +57,16 @@ function updateGUI(){
 
 async function updateSavedGames(savedGame){
   tx = await web3Instance.eth.getTransaction(savedGame.txHash);
-  input_data = '0x' + tx.input.slice(10);  // get only data without function selector
-  //uint256 currentGameId, uint16 version, string calldata note, bytes calldata data1,bytes calldata data2,bytes calldata data3,bytes calldata data4
-  params = web3Instance.eth.abi.decodeParameters(['uint256', 'string', 'bytes', 'bytes', 'bytes', 'bytes'], input_data);
+  input_data = '0x' + tx.input.slice(10);
+  params = web3Instance.eth.abi.decodeParameters(['uint256', 'uint16', 'string', 'bytes', 'bytes', 'bytes', 'bytes'], input_data);
   let game = {};
   game.n = savedGame.saveId;
   game.c = tx.from;
   game.d = params[1];
-  game.i = web3Instance.utils.hexToUtf8(params[2]);
-  game.s = web3Instance.utils.hexToUtf8(params[3]);
-  game.t = web3Instance.utils.hexToUtf8(params[4]);
-  game.m = new Uint8Array(params[5].slice(2).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+  game.i = web3Instance.utils.hexToUtf8(params[3]);
+  game.s = web3Instance.utils.hexToUtf8(params[4]);
+  game.t = web3Instance.utils.hexToUtf8(params[5]);
+  game.m = new Uint8Array(params[6].slice(2).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
   savedGames.push(game);
 }
 
@@ -74,7 +74,7 @@ function updateEvents(results, eventType){
   for (let i = 0; i < results.length; i++){
       updateEvent(results[i], eventType);
     }
-    setTimeout(updateGUI,100);
+    setTimeout(updateGUI,500);
 }
 
 function updateEvent(result, eventType, update){
@@ -105,7 +105,30 @@ async function getInitialEventData(){
 }
 
 
-
+$(document).on('click', '#loadWorldFromId', async function(){
+  let id = $("#loadWorldId").val();
+  let savedGame = await dngContract.getPastEvents("SaveGame", {filter:{ saveId: id }})
+  console.log(savedGame);
+  if(savedGame.length != 0){
+    let game = savedGame[0];
+    tx = await web3Instance.eth.getTransaction(game.transactionHash);
+    input_data = '0x' + tx.input.slice(10);
+    params = web3Instance.eth.abi.decodeParameters(['uint256', 'uint16', 'string', 'bytes', 'bytes', 'bytes', 'bytes'], input_data);
+    document.getElementById("_mci").innerHTML = web3Instance.utils.hexToUtf8(params[3]);
+    document.getElementById("_mcs").innerHTML = web3Instance.utils.hexToUtf8(params[4]);
+    document.getElementById("_mct").innerHTML = web3Instance.utils.hexToUtf8(params[5]);
+    document.getElementById("_mcm").innerHTML = new Uint8Array(params[6].slice(2).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    setTimeout(function(){
+      document.getElementById('startGame').click();
+    },100);
+  }
+  else{
+    $("#modal_title").html("Loading Error");
+    $("#modal_subtitle").html("uh-oh!");
+    $("#modal_text").html("Unable to find saveId!");
+    $("#modal_button").click();
+  }
+});
 
 $(document).on('click', '#saveGame', async function(){
   $(this).addClass("disabled");
@@ -117,7 +140,7 @@ $(document).on('click', '#saveGame', async function(){
     let mcsSave = web3Instance.utils.utf8ToHex(document.getElementById("_mcs").innerHTML);
     let mctSave = web3Instance.utils.utf8ToHex(document.getElementById("_mct").innerHTML);
     let mcmSave = Uint8Array.from(document.getElementById("_mcm").textContent.split(','));
-    let saveGame = await dngContract.methods.saveGame(gameId, note, mciSave, mcsSave, mctSave, mcmSave).send({
+    let saveGame = await dngContract.methods.saveGame(gameId, gameVersion , note, mciSave, mcsSave, mctSave, mcmSave).send({
           from: walletAddress,
           gasPrice: undefined,
           maxFeePerGas: Math.max(feePerGas, 2000000000),
@@ -307,7 +330,7 @@ document.addEventListener("click", function(event) {
             <div class="col sm-12">
               <div class="form-group">
                 <input type="text" style="display:inline;" placeholder="Enter save id" id="loadWorldId">
-                <button id="loadWorld">Load world</button>
+                <button id="loadWorldFromId">Load world</button>
               </div>
             </div>
           </div>
