@@ -11,7 +11,7 @@ const CONST = require("./constants");
 
 const { WIDTH, HEIGHT } = CONST.RES;
 const start = CONST.MAP_SIZE / 2 | 0;
-document.title = 'LibreCraft';
+document.title = 'DerpCraft';
 
 function initGame(){
   // Setup the game object. This will be the 'source of thruth' throughout the game

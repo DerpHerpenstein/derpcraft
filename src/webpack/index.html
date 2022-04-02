@@ -233,7 +233,6 @@ $(document).ready(function() {
 
 document.addEventListener("click", function(event) {
   if(event.target.classList.contains('loadWorld')){
-    console.log(event.target);
     document.getElementById("_mci").innerHTML = event.target.getAttribute('mci');
     document.getElementById("_mcs").innerHTML = event.target.getAttribute('mcs');
     document.getElementById("_mct").innerHTML = event.target.getAttribute('mct');
