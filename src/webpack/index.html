@@ -48,10 +48,11 @@ function updateGUI(){
   $("#ethWorlds").html("");
   for(let i=savedGames.length-1; i>=0; i--){
     let creator = savedGames[i].c.substring(0,6) + "..." + savedGames[i].c.slice(savedGames[i].c.length-4);
-    let newHtml = "<tr><td>" + savedGames[i].n + "</td><td>" + creator + "</td><td>" + savedGames[i].d +
+    let newHtml = "<tr><td>" + savedGames[i].n + "</td><td>" + creator + "</td><td id='savedGameDescription"+i+"'>" +
         '</td><td><button class="loadWorld" mcs="' + savedGames[i].s + '" mci="' + savedGames[i].i + '" mct="' + savedGames[i].t +
         '" mcm="' + savedGames[i].m + '">Load World</button></td></tr>';
     $("#ethWorlds").append(newHtml);
+    $("#savedGameDescription"+i).text(savedGames[i].d);
   }
 }
 
