@@ -96,6 +96,12 @@ function main() {
   }
   console.log("JSON SAVED STRING");
   console.log(JSON.stringify(savedJson));
+  let d = new Date();
+  let time = d.getHours() + ":" + d.getMinutes();
+
+  $("#showSavedJSON").css("display","");
+  $("#savedJSONTitle").text("Saved World at " + time);
+  $("#savedJSONString").text(JSON.stringify(savedJson))
 }
 
 export default /*@__PURE__*/ main;

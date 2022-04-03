@@ -131,6 +131,25 @@ $(document).on('click', '#loadWorldFromId', async function(){
   }
 });
 
+$(document).on('click', '#loadWorldFromJSON', function(){
+  try{
+    let jsonObj = JSON.parse($("#loadWorldJSON").val());
+    document.getElementById("_mci").innerHTML = jsonObj.mci;
+    document.getElementById("_mcs").innerHTML = jsonObj.mcs;
+    document.getElementById("_mct").innerHTML = jsonObj.mct;
+    document.getElementById("_mcm").innerHTML = jsonObj.mcm;
+    setTimeout(function(){
+      document.getElementById('startGame').click();
+    },100);
+  }
+  catch(e){
+    $("#modal_title").html("Loading Error");
+    $("#modal_subtitle").html("uh-oh!");
+    $("#modal_text").html("Unable to load JSON object");
+    $("#modal_button").click();
+  }
+});
+
 $(document).on('click', '#saveGame', async function(){
   $(this).addClass("disabled");
   $(this).prop("disabled", true);
@@ -272,6 +291,10 @@ document.addEventListener("click", function(event) {
     <div class="paper container">
       <div class="row flex-center">
         <div class="sm-12 col">
+          <div id="showSavedJSON" style="display:none;">
+            <p id="savedJSONTitle">Saved World JSON:</p>
+            <p id="savedJSONString" style="word-wrap: break-word;"></p>
+          </div>
           <h3 style="margin:0px;">Derp Craft </h3>
           <p style="font-size:0.88rem">The first 3d game entirely on the Ethereum blockchain</p>
           <h5 style="margin:0px;">Original Game By <a href="https://twitter.com/renomck" target="_blank">Reno McKenzie</a> - <a href="https://github.com/darkenvy/13k-voxelcraft" target="_blank">Github</a></h5>
@@ -331,6 +354,10 @@ document.addEventListener("click", function(event) {
               <div class="form-group">
                 <input type="text" style="display:inline;" placeholder="Enter save id" id="loadWorldId">
                 <button id="loadWorldFromId">Load world</button>
+              </div>
+              <div class="form-group">
+                <input type="text" style="display:inline;" placeholder="Paste JSON object" id="loadWorldJSON">
+                <button id="loadWorldFromJSON">Load world</button>
               </div>
             </div>
           </div>
