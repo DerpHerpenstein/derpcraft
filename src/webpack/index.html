@@ -33,7 +33,7 @@ button{border-radius:4px}
 //*
 const web3Instance = new Web3(ethereum);
 
-const dngAbi = [ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" }, { "indexed": false, "internalType": "uint16", "name": "version", "type": "uint16" }, { "indexed": true, "internalType": "uint256", "name": "saveId", "type": "uint256" } ], "name": "SaveGame", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "currentGameId", "type": "uint256" }, { "internalType": "uint16", "name": "version", "type": "uint16" }, { "internalType": "string", "name": "note", "type": "string" }, { "internalType": "bytes", "name": "data1", "type": "bytes" }, { "internalType": "bytes", "name": "data2", "type": "bytes" }, { "internalType": "bytes", "name": "data3", "type": "bytes" }, { "internalType": "bytes", "name": "data4", "type": "bytes" } ], "name": "saveGame", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, ];
+const dngAbi = [ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" }, { "indexed": false, "internalType": "uint16", "name": "version", "type": "uint16" }, { "indexed": true, "internalType": "uint256", "name": "saveId", "type": "uint256" } ], "name": "SaveGame", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "currentGameId", "type": "uint256" }, { "internalType": "uint16", "name": "version", "type": "uint16" }, { "internalType": "string", "name": "note", "type": "string" }, { "internalType": "bytes", "name": "data1", "type": "bytes" }, { "internalType": "bytes", "name": "data2", "type": "bytes" }, { "internalType": "bytes", "name": "data3", "type": "bytes" }, { "internalType": "bytes", "name": "data4", "type": "bytes" } ], "name": "saveGame", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "_games", "outputs": [ { "internalType": "uint256", "name": "price", "type": "uint256" }, { "internalType": "uint256", "name": "startBlock", "type": "uint256" }, { "internalType": "bytes32", "name": "dataHash", "type": "bytes32" }, { "internalType": "uint256", "name": "currentSupply", "type": "uint256" }, { "internalType": "uint256", "name": "maxSupply", "type": "uint256" }, { "internalType": "address", "name": "creator", "type": "address" }, { "internalType": "uint16", "name": "version", "type": "uint16" } ], "stateMutability": "view", "type": "function" }, ];
 
 let dngAddress = "0x364bA8d803c407E8766582be6e398ae8a6a9355C";
 let dngContract = new web3Instance.eth.Contract(dngAbi,dngAddress);
@@ -105,6 +105,39 @@ async function getInitialEventData(){
 
   updateGUI();
 }
+
+function downloadGame(hexData, name, version){
+  let data = new Uint8Array(hexData.slice(2).match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+  let blob = new Blob([data], {type:"octet/stream"});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = name +"_"+ version + ".zip";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+}
+
+$(document).on('click', '#downloadGame', async function(){
+  try{
+    let game = await dngContract.methods._games(1).call();
+    let downloadHash = game.dataHash;
+    let tx = await web3Instance.eth.getTransaction(downloadHash);
+    let input_data = '0x' + tx.input.slice(10);
+    let params = web3Instance.eth.abi.decodeParameters(['uint256', 'string', 'string', 'bytes'], input_data);
+    downloadGame(params[3], params[1], downloadHash);
+    $("#modal_title").html("Game Downloaded");
+    $("#modal_subtitle").html("Yeaaah BOYYYY!");
+    $("#modal_text").html("In order to get the web3 portion of this game working properly on your local device, you must serve the assets from a local server. ");
+    $("#modal_button").click();
+  }
+  catch(err){
+    $("#modal_title").html("Downloading Error");
+    $("#modal_subtitle").html("uh-oh!");
+    $("#modal_text").html(err);
+    $("#modal_button").click();
+  }
+});
 
 
 $(document).on('click', '#loadWorldFromId', async function(){
@@ -369,7 +402,7 @@ document.addEventListener("click", function(event) {
             <div class="sm-6 col">
               <h3>Features:</h3>
               <p>- <b>Entire game stored on the Ethereum blockchain</b></p>
-              <p>- <b>Save/Load from Ethereum blockchain</b></p>
+              <p>- <b>Save/Load/Download from Ethereum blockchain</b></p>
               <!--<p>- <b>Chat on the Ethereum blockchain</b></p>-->
               <p>- Random Terrain Generation</p>
               <p>- Procedural Caves, Trees, Water, Ore Veins, Textures</p>
