@@ -35,7 +35,7 @@ const web3Instance = new Web3(ethereum);
 
 const dngAbi = [ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" }, { "indexed": false, "internalType": "uint16", "name": "version", "type": "uint16" }, { "indexed": true, "internalType": "uint256", "name": "saveId", "type": "uint256" } ], "name": "SaveGame", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "currentGameId", "type": "uint256" }, { "internalType": "uint16", "name": "version", "type": "uint16" }, { "internalType": "string", "name": "note", "type": "string" }, { "internalType": "bytes", "name": "data1", "type": "bytes" }, { "internalType": "bytes", "name": "data2", "type": "bytes" }, { "internalType": "bytes", "name": "data3", "type": "bytes" }, { "internalType": "bytes", "name": "data4", "type": "bytes" } ], "name": "saveGame", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "_games", "outputs": [ { "internalType": "uint256", "name": "price", "type": "uint256" }, { "internalType": "uint256", "name": "startBlock", "type": "uint256" }, { "internalType": "bytes32", "name": "dataHash", "type": "bytes32" }, { "internalType": "uint256", "name": "currentSupply", "type": "uint256" }, { "internalType": "uint256", "name": "maxSupply", "type": "uint256" }, { "internalType": "address", "name": "creator", "type": "address" }, { "internalType": "uint16", "name": "version", "type": "uint16" } ], "stateMutability": "view", "type": "function" }, ];
 
-let dngAddress = "0x364bA8d803c407E8766582be6e398ae8a6a9355C";
+let dngAddress = "0x2300a3eb7EFEcc79DA869F677E6Bb7148Cc78D99"; // rinkeby address
 let dngContract = new web3Instance.eth.Contract(dngAbi,dngAddress);
 let walletAddress = "";
 let gameId = 1;
@@ -203,7 +203,7 @@ $(document).on('click', '#saveGame', async function(){
         });
     $("#modal_title").html("Save successfull");
     $("#modal_subtitle").html("ooh YEAH!");
-    $("#modal_text").html("You have saved your game on the blockchain!<br>Save ID: X");
+    $("#modal_text").html("You have saved your game on the blockchain!<br>Save ID: " + saveGame.events.SaveGame.returnValues.saveId);
     $("#modal_button").click();
   }
   catch(e){
