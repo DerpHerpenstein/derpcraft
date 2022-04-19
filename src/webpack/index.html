@@ -50,7 +50,8 @@ const web3Instance = new Web3(ethereum);
 
 const dngAbi = [ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "uint256", "name": "gameId", "type": "uint256" }, { "indexed": false, "internalType": "uint16", "name": "version", "type": "uint16" }, { "indexed": true, "internalType": "uint256", "name": "saveId", "type": "uint256" } ], "name": "SaveGame", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "currentGameId", "type": "uint256" }, { "internalType": "uint16", "name": "version", "type": "uint16" }, { "internalType": "string", "name": "note", "type": "string" }, { "internalType": "bytes", "name": "data1", "type": "bytes" }, { "internalType": "bytes", "name": "data2", "type": "bytes" }, { "internalType": "bytes", "name": "data3", "type": "bytes" }, { "internalType": "bytes", "name": "data4", "type": "bytes" } ], "name": "saveGame", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "_games", "outputs": [ { "internalType": "uint256", "name": "price", "type": "uint256" }, { "internalType": "uint256", "name": "startBlock", "type": "uint256" }, { "internalType": "bytes32", "name": "dataHash", "type": "bytes32" }, { "internalType": "uint256", "name": "currentSupply", "type": "uint256" }, { "internalType": "uint256", "name": "maxSupply", "type": "uint256" }, { "internalType": "address", "name": "creator", "type": "address" }, { "internalType": "uint16", "name": "version", "type": "uint16" } ], "stateMutability": "view", "type": "function" }, ];
 
-let dngAddress = "0x2300a3eb7EFEcc79DA869F677E6Bb7148Cc78D99"; // rinkeby address
+//let dngAddress = "0x2300a3eb7EFEcc79DA869F677E6Bb7148Cc78D99"; // rinkeby address
+let dngAddress = "0xe671556523408D885726443Fbcc1358EB556Ff3C"; // mainnet address
 let dngContract = new web3Instance.eth.Contract(dngAbi,dngAddress);
 let walletAddress = "";
 let gameId = 1;
@@ -351,7 +352,7 @@ document.addEventListener("click", function(event) {
             <p id="savedJSONTitle">Saved World JSON:</p>
             <p id="savedJSONString" style="word-wrap: break-word;"></p>
           </div>
-          <h3 style="margin:0px;">Derp Craft [Rinkeby]</h3>
+          <h3 style="margin:0px;">Derp Craft</h3>
           <p style="font-size:0.88rem">The first 3d game entirely on the Ethereum blockchain</p>
           <h5 style="margin:0px;">Original Game By <a href="https://twitter.com/renomck" target="_blank">Reno McKenzie</a> - <a href="https://github.com/darkenvy/13k-voxelcraft" target="_blank">Github</a></h5>
           <h5 style="margin:0px;">Web3 Integration By <a href="https://twitter.com/0xDerpNation" target="_blank">Derp Herpenstein</a> - <a href="https://github.com/DerpHerpenstein/derpcraft" target="_blank">Github</a></h5>
